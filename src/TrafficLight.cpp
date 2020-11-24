@@ -85,7 +85,7 @@ void TrafficLight::cycleThroughPhases()
         std::cout << "elapsedTime=" << ElapsedTime(last_light_change) << std::endl; // TODO: dead code
         if(ElapsedTime(last_light_change) >= GenerateRandomDuration(4000, 6000)){ 
             _currentPhase = _currentPhase == green ? red : green;
-            // TODO: update message queue
+            _phaseQueue.send(std::move(_currentPhase));
             last_light_change = steady_clock::now();
         }
     } 
