@@ -5,6 +5,7 @@
 #include <deque>
 #include <condition_variable>
 #include "TrafficObject.h"
+using namespace std::chrono;
 
 // forward declarations to avoid include cycle
 class Vehicle;
@@ -49,6 +50,9 @@ private:
     // typical behaviour methods
     void cycleThroughPhases();
     TrafficLightPhase _currentPhase;
+    
+    int duration(system_clock::time_point startTime);
+    int generateRandomDuration(int ms_lowerBound, int ms_upperBound);
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling 
     // send in conjunction with move semantics.

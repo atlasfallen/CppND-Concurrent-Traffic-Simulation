@@ -23,7 +23,7 @@ void MessageQueue<T>::send(T &&msg)
 
 /* Implementation of class "TrafficLight" */
 
-/* 
+
 TrafficLight::TrafficLight()
 {
     _currentPhase = TrafficLightPhase::red;
@@ -36,6 +36,19 @@ void TrafficLight::waitForGreen()
     // Once it receives TrafficLightPhase::green, the method returns.
 }
 
+int GenerateRandomDuration(int lowerBound, int upperBound){
+    // return a random duration(milliseconds) between lowerBoud(milliseconds) and upperBound(milliseconds)
+    std::random_device rd;
+    std::default_random_engine gen(rd());
+    std::uniform_int_distribution<int> udist(lowerBound, upperBound);
+    return udist(gen);
+}
+
+int ElapsedTime(steady_clock::time_point startTime){
+    // return duration(milliseconds) between startTime and current time
+    return duration_cast<duration<int>>(steady_clock::now() - startTime).count();
+}
+
 TrafficLightPhase TrafficLight::getCurrentPhase()
 {
     return _currentPhase;
@@ -44,6 +57,7 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 void TrafficLight::simulate()
 {
     // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
+    threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 // virtual function which is executed in a thread
@@ -52,7 +66,16 @@ void TrafficLight::cycleThroughPhases()
     // FP.2a : Implement the function with an infinite loop that measures the time between two loop cycles 
     // and toggles the current phase of the traffic light between red and green and sends an update method 
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
-    // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
+    // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles.
+    
+    auto last_light_change = steady_clock::now();
+    while(true){
+        std::this_thread::sleep_for(milliseconds(100));
+        std::cout << "elapsedTime=" << ElapsedTime(last_light_change) << std::endl; // TODO: dead code
+        if(ElapsedTime(last_light_change) >= GenerateRandomDuration(4000, 6000)){ 
+            _currentPhase = _currentPhase == green ? red : green;
+            // TODO: update message queue
+            last_light_change = steady_clock::now();
+        }
+    } 
 }
-
-*/
