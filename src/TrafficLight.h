@@ -16,11 +16,10 @@ class Vehicle;
 // Also, the class should define an std::dequeue called _queue, which stores objects of type TrafficLightPhase. 
 // Also, there should be an std::condition_variable as well as an std::mutex as private members. 
 
-template <class T>
-class MessageQueue
+template <class T> class MessageQueue
 {
 public:
-    void send(T &&message);
+    void send(T &&msg);
     T recieve();
 
 private:
@@ -61,6 +60,7 @@ private:
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling 
     // send in conjunction with move semantics.
 
+    MessageQueue<TrafficLightPhase> _phaseQueue;
     std::condition_variable _condition;
     std::mutex _mutex;
 };
