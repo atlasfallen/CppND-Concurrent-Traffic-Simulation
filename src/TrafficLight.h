@@ -20,9 +20,13 @@ template <class T>
 class MessageQueue
 {
 public:
+    void send(T &&message);
+    T recieve();
 
 private:
-    
+    std::deque<T> _queue;
+    std::condition_variable _condVar;
+    std::mutex _mutex;
 };
 
 // FP.1 : Define a class „TrafficLight“ which is a child class of TrafficObject. 
@@ -50,7 +54,7 @@ private:
     // typical behaviour methods
     void cycleThroughPhases();
     TrafficLightPhase _currentPhase;
-    
+
     int duration(system_clock::time_point startTime);
     int generateRandomDuration(int ms_lowerBound, int ms_upperBound);
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
