@@ -57,7 +57,7 @@ int GenerateRandomDuration(int lowerBound, int upperBound){
 
 int ElapsedTime(steady_clock::time_point startTime){
     // return duration(milliseconds) between startTime and current time
-    return duration_cast<duration<int>>(steady_clock::now() - startTime).count();
+    return duration_cast<milliseconds>(steady_clock::now() - startTime).count();
 }
 
 TrafficLightPhase TrafficLight::getCurrentPhase()
@@ -81,8 +81,7 @@ void TrafficLight::cycleThroughPhases()
     
     auto last_light_change = steady_clock::now();
     while(true){
-        std::this_thread::sleep_for(milliseconds(100));
-        std::cout << "elapsedTime=" << ElapsedTime(last_light_change) << std::endl; // TODO: dead code
+        std::this_thread::sleep_for(milliseconds(1));
         if(ElapsedTime(last_light_change) >= GenerateRandomDuration(4000, 6000)){ 
             _currentPhase = _currentPhase == green ? red : green;
             _phaseQueue.send(std::move(_currentPhase));
